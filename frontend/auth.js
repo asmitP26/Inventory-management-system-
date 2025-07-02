@@ -25,8 +25,17 @@ function login(username, password) {
 
 // Logout function
 function logout() {
+  // Clear all localStorage data
   localStorage.removeItem("currentUser")
-  window.location.href = "index.html"
+  localStorage.removeItem("inventory")
+
+  // Show logout message
+  showNotification("Logging out...", "info")
+
+  // Force redirect to login page immediately
+  setTimeout(() => {
+    window.location.replace("index.html")
+  }, 500)
 }
 
 // Get current user
@@ -48,9 +57,56 @@ function isAdmin() {
 
 // Protect page (redirect to login if not authenticated)
 function protectPage() {
-  if (!isLoggedIn()) {
-    window.location.href = "index.html"
+  const currentUser = getCurrentUser()
+  if (!currentUser) {
+    // Force redirect to login page
+    window.location.replace("index.html")
     return false
   }
   return true
+}
+
+// Show notification function (for auth.js)
+function showNotification(message, type = "info") {
+  // Create notification element
+  const notification = document.createElement("div")
+  notification.className = `notification notification-${type}`
+  notification.textContent = message
+
+  // Add styles
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    background: ${type === "success" ? "#d4edda" : type === "info" ? "#d1ecf1" : "#f8d7da"};
+    color: ${type === "success" ? "#155724" : type === "info" ? "#0c5460" : "#721c24"};
+    border: 1px solid ${type === "success" ? "#c3e6cb" : type === "info" ? "#bee5eb" : "#f5c6cb"};
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    z-index: 1001;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    transform: translateX(100%);
+    opacity: 0;
+  `
+
+  document.body.appendChild(notification)
+
+  // Animate in
+  setTimeout(() => {
+    notification.style.transform = "translateX(0)"
+    notification.style.opacity = "1"
+  }, 100)
+
+  // Remove notification after 3 seconds
+  setTimeout(() => {
+    notification.style.opacity = "0"
+    notification.style.transform = "translateX(100%)"
+    setTimeout(() => {
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification)
+      }
+    }, 300)
+  }, 3000)
 }

@@ -38,25 +38,32 @@
 
     <script src="auth.js"></script>
     <script>
-        // Check if user is already logged in
-        if (localStorage.getItem('currentUser')) {
-            window.location.href = 'dashboard.html';
-        }
+  // Clear any existing session when manually visiting login page
+  if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+    localStorage.removeItem('currentUser')
+    localStorage.removeItem('inventory')
+  }
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            const result = login(username, password);
-            
-            if (result.success) {
-                window.location.href = 'dashboard.html';
-            } else {
-                document.getElementById('errorMessage').textContent = result.message;
-            }
-        });
-    </script>
+  // Check if user is already logged in
+  const currentUser = getCurrentUser()
+  if (currentUser) {
+    window.location.replace('dashboard.html')
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault()
+    
+    const username = document.getElementById('username').value
+    const password = document.getElementById('password').value
+    
+    const result = login(username, password)
+    
+    if (result.success) {
+      window.location.replace('dashboard.html')
+    } else {
+      document.getElementById('errorMessage').textContent = result.message
+    }
+  })
+</script>
 </body>
 </html>

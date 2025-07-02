@@ -99,5 +99,14 @@
 
     <script src="auth.js"></script>
     <script src="script.js"></script>
+    <script>
+  // Immediate authentication check
+  (function() {
+    if (!isLoggedIn()) {
+      window.location.replace('index.html')
+      return
+    }
+  })()
+</script>
 </body>
 </html>

@@ -2,6 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const bodyParser = require("body-parser")
 const path = require("path")
+const fs = require("fs")
 
 // Import routes
 const authRoutes = require("./routes/auth")
@@ -21,6 +22,11 @@ app.use(express.static(path.join(__dirname, "../frontend")))
 // API Routes
 app.use("/api/auth", authRoutes)
 app.use("/api/inventory", inventoryRoutes)
+
+// Root route
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/index.html"))
+})
 
 // Serve frontend for any non-API routes
 app.get("*", (req, res) => {
@@ -42,6 +48,10 @@ app.listen(PORT, () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`)
   console.log(`📁 Serving frontend from: ${path.join(__dirname, "../frontend")}`)
   console.log(`🔧 Environment: ${process.env.NODE_ENV || "development"}`)
+  console.log(`\n💡 Open your browser and go to: http://localhost:${PORT}`)
+  console.log(`\n🔑 Login credentials:`)
+  console.log(`   Admin: admin / admin123`)
+  console.log(`   User:  user / user123`)
 })
 
 module.exports = app
